@@ -83,7 +83,22 @@ export default async function DashboardPage({
         ) : (
           <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {messages.map((message) => (
-              <MessageCard key={message.id} message={message} />
+              <div key={message.id} className="relative">
+  <MessageCard message={message} />
+  <form action={async () => {
+    "use server";
+    const { createClient } = await import("@/lib/supabase/server");
+    const supabase = createClient();
+    await supabase.from("messages").delete().eq("id", message.id);
+  }}>
+    <button
+      type="submit"
+      className="absolute top-3 right-3 bg-white border border-border rounded-full px-3 py-1 text-xs text-red-500 hover:bg-red-50"
+    >
+      Delete
+    </button>
+  </form>
+</div>
             ))}
           </div>
         )}
