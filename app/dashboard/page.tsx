@@ -83,13 +83,15 @@ export default async function DashboardPage({
         ) : (
           <div className="mt-6 grid gap-5 sm:grid-cols-2 lg:grid-cols-3">
             {messages.map((message) => (
-              <div key={message.id} className="relative">
+           <div key={message.id} className="relative">
   <MessageCard message={message} />
   <form action={async () => {
     "use server";
+    const { revalidatePath } = await import("next/cache");
     const { createClient } = await import("@/lib/supabase/server");
     const supabase = createClient();
     await supabase.from("messages").delete().eq("id", message.id);
+    revalidatePath("/dashboard");
   }}>
     <button
       type="submit"
